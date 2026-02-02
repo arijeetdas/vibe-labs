@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Labs ⚡ | About</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#8c25f4",
+            background: "#0a0612",
+          },
+          fontFamily: {
+            display: ["Space Grotesk"],
+          },
+          boxShadow: {
+            neon: "0 0 18px rgba(140, 37, 244, 0.5)",
+            "neon-strong": "0 0 30px rgba(140, 37, 244, 0.75)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: "Space Grotesk", sans-serif;
+      background: #0a0612;
+      color: #ffffff;
+    }
+
+    .glass-panel {
+      background: linear-gradient(
+        180deg,
+        rgba(60, 20, 90, 0.55),
+        rgba(20, 10, 40, 0.75)
+      );
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(180, 120, 255, 0.18);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 12px rgba(140, 37, 244, 0.9);
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    @media (hover: hover) {
+      .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(140, 37, 244, 0.5);
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden">
+
+  <!-- Ambient blobs -->
+  <div class="fixed -top-32 -left-32 w-[40rem] h-[40rem] bg-primary/25 rounded-full blur-[140px] -z-10"></div>
+  <div class="fixed -bottom-32 -right-32 w-[50rem] h-[50rem] bg-purple-900/25 rounded-full blur-[160px] -z-10"></div>
+
+  <div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside
+      class="fixed lg:static inset-y-0 left-0 z-50 w-64
+             -translate-x-full lg:translate-x-0
+             transition-transform duration-300
+             glass-panel border-r border-white/10
+             h-full p-6 flex flex-col"
+    >
+      <!-- Desktop Logo -->
+      <div class="hidden lg:flex items-center gap-3 mb-10">
+        <div class="size-10 rounded-xl bg-primary flex items-center justify-center shadow-neon-strong">
+          <span class="material-symbols-outlined">bolt</span>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold neon-text">Vibe Labs</h1>
+          <p class="text-primary text-[11px] uppercase font-bold tracking-widest">
+            Build fast. Learn faster.
+          </p>
+        </div>
+      </div>
+
+      <!-- Nav (Top) -->
+      <nav class="space-y-2">
+        <a
+          href="index.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl
+                 text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+        >
+          <span class="material-symbols-outlined">home</span>
+          <span class="text-sm font-medium">Home</span>
+        </a>
+
+        <a
+          href="apps.html"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl
+                 text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+        >
+          <span class="material-symbols-outlined">apps</span>
+          <span class="text-sm font-medium">Apps</span>
+        </a>
+      </nav>
+
+      <!-- About (Bottom – ACTIVE) -->
+      <div class="mt-auto pt-4 border-t border-white/10">
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary shadow-neon">
+          <span class="material-symbols-outlined">info</span>
+          <span class="text-sm font-medium">About</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col">
+
+      <!-- MOBILE TOP BAR -->
+      <div class="lg:hidden flex items-center justify-between px-4 pt-6">
+        <div class="flex items-center gap-3">
+          <div class="size-9 rounded-xl bg-primary flex items-center justify-center shadow-neon">
+            <span class="material-symbols-outlined text-lg">bolt</span>
+          </div>
+          <div>
+            <h1 class="text-sm font-bold neon-text leading-none">Vibe Labs</h1>
+            <p class="text-primary text-[9px] uppercase font-bold tracking-widest">
+              Build fast
+            </p>
+          </div>
+        </div>
+
+        <button
+          id="menu-btn"
+          class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+        >
+          <span id="icon-menu" class="material-symbols-outlined">menu</span>
+          <span id="icon-close" class="material-symbols-outlined hidden">close</span>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-12 space-y-20">
+
+        <!-- ABOUT VIBE LABS -->
+        <section class="max-w-3xl">
+          <h2 class="text-3xl lg:text-4xl font-black neon-text mb-4">
+            About Vibe Labs
+          </h2>
+          <p class="text-slate-300 text-sm lg:text-base leading-relaxed">
+            Vibe Labs is a personal experimentation space where ideas are shipped fast,
+            UI patterns are explored, and small apps are built to learn by doing.
+            This site serves as a living lab — not a finished product.
+          </p>
+        </section>
+
+        <!-- DEVELOPER SECTION -->
+        <section class="glass-panel rounded-3xl p-8 max-w-4xl">
+          <div class="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
+
+<div class="size-32 rounded-full overflow-hidden bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-neon">
+  <img
+    src="assets/images/profile/dp.png"
+    alt="DP Image"
+    class="w-full h-full object-cover"
+  />
+</div>
+
+
+            <div>
+              <h3 class="text-2xl font-bold mb-1">Arijeet Das</h3>
+              <p class="text-primary text-xs font-bold uppercase tracking-widest mb-4">
+                Flutter · Android · iOS · Web
+              </p>
+
+              <p class="text-slate-400 text-sm leading-relaxed mb-6 max-w-xl">
+                I build fast, experiment often, and learn by shipping.
+                My focus is on Flutter-based apps, clean UI systems,
+                and turning rough ideas into polished experiences.
+              </p>
+
+              <div class="flex flex-wrap gap-4">
+                <a
+                  href="https://arijeetdas-dev.vercel.app"
+                  target="_blank"
+                  class="action-btn bg-primary text-white"
+                >
+                  <span class="material-symbols-outlined text-sm">language</span>
+                  Portfolio
+                </a>
+
+                <a
+                  href="https://github.com/arijeetdas"
+                  target="_blank"
+                  class="action-btn bg-white/10 text-white"
+                >
+                  <span class="material-symbols-outlined text-sm">code</span>
+                  GitHub
+                </a>
+
+                <div class="action-btn bg-white/5 text-slate-400 cursor-not-allowed">
+                  <span class="material-symbols-outlined text-sm">work</span>
+                  LinkedIn
+                </div>
+
+                <a
+                  href="mailto:arijeetdas900@gmail.com"
+                  class="action-btn bg-white/10 text-white"
+                >
+                  <span class="material-symbols-outlined text-sm">mail</span>
+                  Email
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const menuBtn = document.getElementById("menu-btn");
+    const sidebar = document.querySelector("aside");
+    const iconMenu = document.getElementById("icon-menu");
+    const iconClose = document.getElementById("icon-close");
+
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("-translate-x-full");
+      iconMenu.classList.toggle("hidden");
+      iconClose.classList.toggle("hidden");
+    });
+  </script>
+
+</body>
+</html>
