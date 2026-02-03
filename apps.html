@@ -9,11 +9,11 @@
 <title>Vibe Labs ⚡ | Apps</title>
 
 <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
 </head>
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -48,7 +48,6 @@ body {
   color: #ffffff;
 }
 
-/* Glass */
 .glass-panel {
   background: linear-gradient(
     180deg,
@@ -59,12 +58,10 @@ body {
   border: 1px solid rgba(180, 120, 255, 0.18);
 }
 
-/* Neon */
 .neon-text {
   text-shadow: 0 0 12px rgba(140, 37, 244, 0.9);
 }
 
-/* App card hover */
 .app-card {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
@@ -96,7 +93,6 @@ body {
          h-full p-6 flex flex-col"
 >
 
-  <!-- Desktop Logo -->
   <div class="hidden lg:flex items-center gap-3 mb-10">
     <div class="size-10 rounded-xl bg-primary flex items-center justify-center shadow-neon-strong">
       <span class="material-symbols-outlined">bolt</span>
@@ -109,7 +105,6 @@ body {
     </div>
   </div>
 
-  <!-- Nav -->
   <nav class="space-y-2">
     <a href="index.html"
        class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition">
@@ -117,21 +112,19 @@ body {
       <span class="text-sm font-medium">Home</span>
     </a>
 
-    <!-- ACTIVE -->
     <a href="apps.html"
-    class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary shadow-neon">
+       class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary shadow-neon">
       <span class="material-symbols-outlined">apps</span>
       <span class="text-sm font-medium">Apps</span>
-</a>
+    </a>
   </nav>
 
-  <!-- About -->
   <div class="mt-auto pt-4 border-t border-white/10">
     <a href="about.html"
-    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer">
+       class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer">
       <span class="material-symbols-outlined">info</span>
       <span class="text-sm font-medium">About</span>
-  </a>
+    </a>
   </div>
 </aside>
 
@@ -152,20 +145,35 @@ body {
     </div>
   </div>
 
-  <button
-    id="menu-btn"
-    class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
-  >
-    <span id="icon-menu" class="material-symbols-outlined">menu</span>
-    <span id="icon-close" class="material-symbols-outlined hidden">close</span>
-  </button>
+  <div class="flex items-center gap-2">
+    <!-- Search -->
+    <button
+      id="mobileSearchToggle"
+      class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+    >
+      <span class="material-symbols-outlined">search</span>
+    </button>
+
+    <!-- Menu -->
+    <button
+      id="menu-btn"
+      class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+    >
+      <span id="icon-menu" class="material-symbols-outlined">menu</span>
+      <span id="icon-close" class="material-symbols-outlined hidden">close</span>
+    </button>
+  </div>
 </div>
 
-
 <!-- Header / Search -->
-<header class="h-16 lg:h-20 glass-panel border-b border-white/10 flex items-center px-4 lg:px-8 mt-4 lg:mt-0">
-
-  <div class="relative w-full max-w-xl">
+<header
+  id="searchHeader"
+  class="hidden lg:flex h-16 lg:h-20 glass-panel border-b border-white/10 items-center px-4 lg:px-8 mt-4 lg:mt-0"
+>
+  <div
+    id="searchWrapper"
+    class="relative w-full max-w-xl"
+  >
     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
       search
     </span>
@@ -182,52 +190,30 @@ body {
 
   <h2 class="text-3xl font-black neon-text mb-8">All Apps</h2>
 
-  <div
-    id="appsGrid"
-    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-  >
+  <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-    <!-- App Card -->
     <a href="dice.html" class="app-card glass-panel p-6 rounded-2xl" data-name="Dice Roller">
       <div class="size-16 rounded-2xl mb-4 bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center shadow-neon">
-        <img
-            src="assets/images/apps/dice.png"
-            alt="Dice App"
-            class="w-10 h-10 object-contain"
-        />
+        <img src="assets/images/apps/dice.png" class="w-10 h-10 object-contain"/>
       </div>
       <h4 class="font-bold mb-1">Dice Roller</h4>
-      <p class="text-slate-400 text-xs">
-        Simple Dice Rolling app made with Flutter
-      </p>
+      <p class="text-slate-400 text-xs">Simple Dice Rolling app made with Flutter</p>
     </a>
 
     <a href="calculator.html" class="app-card glass-panel p-6 rounded-2xl" data-name="Calculator">
       <div class="size-16 rounded-2xl mb-4 bg-gradient-to-br from-primary to-indigo-500 flex items-center justify-center shadow-neon">
-        <img
-            src="assets/images/apps/calculator.png"
-            alt="Calculator App"
-            class="w-10 h-10 object-contain"
-        />
+        <img src="assets/images/apps/calculator.png" class="w-10 h-10 object-contain"/>
       </div>
       <h4 class="font-bold mb-1">Calculator</h4>
-      <p class="text-slate-400 text-xs">
-        A simple calculator app built with Flutter.
-      </p>
+      <p class="text-slate-400 text-xs">A simple calculator app built with Flutter.</p>
     </a>
-    
+
     <a href="#" class="app-card glass-panel p-6 rounded-2xl" data-name="Meal Planner">
       <div class="size-16 rounded-2xl mb-4 bg-gradient-to-br from-primary to-indigo-500 flex items-center justify-center shadow-neon">
-        <img
-            src="assets/images/apps/meals.png"
-            alt="Meals App"
-            class="w-10 h-10 object-contain"
-        />
+        <img src="assets/images/apps/meals.png" class="w-10 h-10 object-contain"/>
       </div>
       <h4 class="font-bold mb-1">Meal Planner</h4>
-      <p class="text-slate-400 text-xs">
-        Daily meal flow experiment.
-      </p>
+      <p class="text-slate-400 text-xs">Daily meal flow experiment.</p>
     </a>
 
   </div>
@@ -248,20 +234,37 @@ menuBtn.addEventListener("click", () => {
   iconClose.classList.toggle("hidden");
 });
 
-/* Search functionality */
 const searchInput = document.getElementById("searchInput");
 const appCards = document.querySelectorAll("#appsGrid a");
 
 searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase();
-
   appCards.forEach(card => {
-    const name = card.dataset.name.toLowerCase();
-    card.style.display = name.includes(query) ? "block" : "none";
+    card.style.display = card.dataset.name.toLowerCase().includes(query)
+      ? "block"
+      : "none";
   });
 });
 </script>
 
+<script>
+const mobileSearchToggle = document.getElementById("mobileSearchToggle");
+const searchHeader = document.getElementById("searchHeader");
+const searchInput = document.getElementById("searchInput");
+
+mobileSearchToggle.addEventListener("click", () => {
+  const isHidden = searchHeader.classList.contains("hidden");
+
+  if (isHidden) {
+  searchHeader.classList.remove("hidden");
+  searchInput.focus();
+} else {
+  searchHeader.classList.add("hidden");
+  searchInput.value = "";
+}
+
+});
+</script>
 
 </body>
 </html>
