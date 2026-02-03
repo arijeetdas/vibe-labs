@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0a0612">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Vibe Labs ⚡ | Dice Roller</title>
+
+<!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+</head>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: "#8c25f4",
+        background: "#0a0612",
+      },
+      fontFamily: {
+        display: ["Space Grotesk"]
+      },
+      boxShadow: {
+        neon: "0 0 18px rgba(140, 37, 244, 0.5)",
+        "neon-strong": "0 0 32px rgba(140, 37, 244, 0.75)",
+      }
+    }
+  }
+}
+</script>
+
+<style>
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: #0a0612;
+  color: #ffffff;
+}
+
+/* Hide scrollbar but keep scrolling */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Glass */
+.glass-panel {
+  background: linear-gradient(
+    180deg,
+    rgba(60, 20, 90, 0.55),
+    rgba(20, 10, 40, 0.75)
+  );
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(180, 120, 255, 0.18);
+}
+
+/* Neon */
+.neon-text {
+  text-shadow: 0 0 14px rgba(140, 37, 244, 0.9);
+}
+
+/* Download button */
+.download-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px rgba(140, 37, 244, 0.8);
+}
+.download-btn:active {
+  transform: scale(0.96);
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 6px;
+  width: 0%;
+  background: linear-gradient(90deg, #8c25f4, #c084fc);
+  transition: width 0.25s ease;
+}
+
+/* Screenshots rail */
+.screenshot-rail {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.screenshot-rail::-webkit-scrollbar { display: none; }
+.screenshot-rail { scrollbar-width: none; }
+
+.screenshot {
+  flex: 0 0 auto;
+  width: 260px;
+  aspect-ratio: 9 / 16;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.screenshot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(140, 37, 244, 0.5);
+}
+</style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden bg-background">
+
+<!-- Ambient blobs -->
+<div class="fixed -top-32 -left-32 w-[40rem] h-[40rem] bg-primary/20 rounded-full blur-[140px] -z-10"></div>
+<div class="fixed -bottom-32 -right-32 w-[50rem] h-[50rem] bg-purple-900/20 rounded-full blur-[160px] -z-10"></div>
+
+<div class="flex h-screen">
+
+<!-- Sidebar -->
+<aside
+  id="sidebar"
+  class="fixed lg:static inset-y-0 left-0 z-50 w-64
+         -translate-x-full lg:translate-x-0
+         transition-transform duration-300
+         glass-panel border-r border-white/10
+         h-full p-6 flex flex-col"
+>
+
+  <div class="hidden lg:flex items-center gap-3 mb-10">
+    <div class="size-10 rounded-xl bg-primary flex items-center justify-center shadow-neon-strong">
+      <span class="material-symbols-outlined">bolt</span>
+    </div>
+    <div>
+      <h1 class="text-xl font-bold neon-text">Vibe Labs</h1>
+      <p class="text-primary text-[11px] uppercase font-bold tracking-widest">
+        Build fast. Learn faster.
+      </p>
+    </div>
+  </div>
+
+  <nav class="space-y-2">
+    <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/10">
+      <span class="material-symbols-outlined">home</span> Home
+    </a>
+
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary shadow-neon">
+      <span class="material-symbols-outlined">apps</span> Apps
+    </div>
+  </nav>
+
+  <div class="mt-auto pt-4 border-t border-white/10">
+    <a href="about.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-white/10">
+      <span class="material-symbols-outlined">info</span> About
+    </a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="flex-1 overflow-y-auto hide-scrollbar p-6 lg:p-12 space-y-20">
+
+<!-- Top bar -->
+<div class="flex items-center justify-between">
+<button
+  id="backBtn"
+  class="flex items-center gap-2 text-slate-300 hover:text-white transition"
+>
+  <span class="material-symbols-outlined">arrow_back</span>
+  Back
+</button>
+
+
+  <button id="menu-btn" class="lg:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20">
+    <span id="icon-menu" class="material-symbols-outlined">menu</span>
+    <span id="icon-close" class="material-symbols-outlined hidden">close</span>
+  </button>
+</div>
+
+<!-- Header -->
+<section class="max-w-5xl">
+  <div class="flex gap-6 items-center">
+    <div class="size-24 rounded-3xl bg-gradient-to-br from-primary to-indigo-500 flex items-center justify-center shadow-neon">
+      <img src="assets/images/apps/calculator.png" class="w-14 h-14 object-contain"/>
+    </div>
+    <div>
+      <div class="flex items-center gap-3 mb-1">
+        <h1 class="text-4xl lg:text-5xl font-black neon-text">Calculator</h1>
+        <span class="px-3 py-1 rounded-full bg-primary/15 border border-primary/40 text-primary text-xs font-bold uppercase shadow-neon">
+          Experimental
+        </span>
+      </div>
+      <p class="text-slate-400 text-sm">Version 1.0.0</p>
+    </div>
+  </div>
+</section>
+
+<!-- Download -->
+<section class="max-w-5xl space-y-4">
+  <a
+    href="https://github.com/arijeetdas/calculator/releases/download/v1.0.0/Calculator-v1.0.0.apk"
+    download
+    id="downloadBtn"
+    class="download-btn px-10 py-4 rounded-2xl bg-primary border border-primary/40 text-white font-bold text-lg flex items-center gap-3 shadow-neon inline-flex"
+  >
+    <span class="material-symbols-outlined">download</span>
+    <span id="downloadText">Download App</span>
+  </a>
+
+  <div class="glass-panel rounded-full overflow-hidden relative">
+    <div id="progressBar" class="progress-bar"></div>
+    <span
+      id="progressText"
+      class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white"
+    >
+      0%
+    </span>
+  </div>
+</section>
+
+<!-- Description -->
+<section class="max-w-4xl">
+  <h2 class="text-2xl font-bold mb-4">About this app</h2>
+  <p class="text-slate-400 leading-relaxed">
+    A modern, minimal calculator app built with Flutter for Android devices.
+  </p>
+</section>
+
+<!-- Screenshots -->
+<section class="max-w-6xl">
+  <h2 class="text-2xl font-bold mb-4">Screenshots</h2>
+
+  <div class="relative">
+    <button onclick="scrollScreens(-1)" class="absolute -left-4 top-1/2 -translate-y-1/2 bg-white/10 p-2 rounded-full">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    <div id="screenshotRail" class="screenshot-rail px-6">
+      <img src="assets/images/screenshots/calculator/mobile-1.png" class="screenshot glass-panel rounded-3xl" onclick="openLightbox(0)">
+      <img src="assets/images/screenshots/calculator/mobile-2.png" class="screenshot glass-panel rounded-3xl" onclick="openLightbox(1)">
+      <img src="assets/images/screenshots/calculator/mobile-3.png" class="screenshot glass-panel rounded-3xl" onclick="openLightbox(2)">
+    </div>
+
+    <button onclick="scrollScreens(1)" class="absolute -right-4 top-1/2 -translate-y-1/2 bg-white/10 p-2 rounded-full">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+</section>
+
+<!-- Changelog -->
+<section class="max-w-4xl glass-panel rounded-3xl p-8">
+  <h2 class="text-2xl font-bold mb-4">Changelog</h2>
+  <p class="text-slate-400 italic">
+    v1.0.0 – Initial release.
+  </p>
+</section>
+
+</main>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
+  <button onclick="closeLightbox()" class="absolute top-6 right-6 bg-white/10 p-2 rounded-full">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+
+  <button onclick="prevImage()" class="absolute left-6">
+    <span class="material-symbols-outlined text-4xl">chevron_left</span>
+  </button>
+
+  <img id="lightboxImg" class="max-h-[85vh] rounded-2xl"/>
+
+  <button onclick="nextImage()" class="absolute right-6">
+    <span class="material-symbols-outlined text-4xl">chevron_right</span>
+  </button>
+</div>
+
+<script>
+/* Sidebar toggle */
+const menuBtn = document.getElementById("menu-btn");
+const sidebar = document.getElementById("sidebar");
+const iconMenu = document.getElementById("icon-menu");
+const iconClose = document.getElementById("icon-close");
+
+if (menuBtn) {
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("-translate-x-full");
+    iconMenu.classList.toggle("hidden");
+    iconClose.classList.toggle("hidden");
+  });
+}
+
+/* Download progress with percentage + text change */
+const downloadBtn = document.getElementById("downloadBtn");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const downloadText = document.getElementById("downloadText");
+
+downloadBtn.addEventListener("click", () => {
+  let progress = 0;
+  downloadText.textContent = "Downloading…";
+  progressText.textContent = "0%";
+  progressBar.style.width = "0%";
+
+  const interval = setInterval(() => {
+    progress += Math.random() * 12;
+    progress = Math.min(progress, 100);
+
+    progressBar.style.width = progress + "%";
+    progressText.textContent = Math.floor(progress) + "%";
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      downloadText.textContent = "Downloaded";
+      progressText.textContent = "100%";
+    }
+  }, 300);
+});
+
+/* Screenshots */
+const screenshots = [
+  "assets/images/screenshots/calculator/mobile-1.png",
+  "assets/images/screenshots/calculator/mobile-2.png",
+  "assets/images/screenshots/calculator/mobile-3.png"
+];
+let currentImage = 0;
+
+function scrollScreens(dir) {
+  document.getElementById("screenshotRail").scrollBy({
+    left: dir * 300,
+    behavior: "smooth"
+  });
+}
+
+function openLightbox(index) {
+  currentImage = index;
+  document.getElementById("lightboxImg").src = screenshots[currentImage];
+  document.getElementById("lightbox").classList.remove("hidden");
+  document.getElementById("lightbox").classList.add("flex");
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").classList.add("hidden");
+  document.getElementById("lightbox").classList.remove("flex");
+}
+
+function prevImage() {
+  currentImage = (currentImage - 1 + screenshots.length) % screenshots.length;
+  document.getElementById("lightboxImg").src = screenshots[currentImage];
+}
+
+function nextImage() {
+  currentImage = (currentImage + 1) % screenshots.length;
+  document.getElementById("lightboxImg").src = screenshots[currentImage];
+}
+</script>
+
+<script>
+const backBtn = document.getElementById("backBtn");
+
+// No history → hide back button
+if (window.history.length <= 1) {
+  backBtn.classList.add("hidden");
+}
+
+// Handle back navigation
+backBtn.addEventListener("click", () => {
+  // If user navigated from within your site
+  if (document.referrer.includes(window.location.origin)) {
+    window.history.back();
+  }
+});
+</script>
+
+</body>
+</html>
