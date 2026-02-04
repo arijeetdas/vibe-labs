@@ -73,10 +73,64 @@ body {
     box-shadow: 0 0 30px rgba(140, 37, 244, 0.45);
   }
 }
+
+/* mobile search suggestion item (copied behavior from index.html) */
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 </style>
-</head>
 
 <body class="min-h-screen overflow-x-hidden">
+
+<!-- MOBILE SEARCH OVERLAY -->
+<div
+  id="mobileSearchOverlay"
+  class="fixed inset-0 z-[100] hidden lg:hidden
+         bg-black/60 backdrop-blur-xl
+         flex items-start justify-center px-4 pt-20"
+>
+  <div class="w-full max-w-xl glass-panel rounded-2xl p-4 relative">
+
+    <!-- Close button -->
+    <button
+      id="mobileSearchClose"
+      class="absolute right-3 -top-14 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition" 
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    <!-- Search input -->
+    <div class="relative mt-6">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+        search
+      </span>
+      <input
+        id="mobileSearchInput"
+        placeholder="Search apps..."
+        class="w-full bg-white/5 border border-white/10 rounded-xl
+               py-3 pl-12 pr-4 text-sm text-white
+               placeholder:text-slate-500
+               focus:ring-2 focus:ring-primary outline-none"
+      />
+    </div>
+
+    <!-- Suggestions (ADDED, nothing removed) -->
+    <div
+      id="mobileSearchSuggestions"
+      class="mt-4 space-y-2 max-h-72 overflow-y-auto"
+    ></div>
+
+  </div>
+</div>
 
 <!-- Ambient blobs -->
 <div class="fixed -top-32 -left-32 w-[40rem] h-[40rem] bg-primary/25 rounded-full blur-[140px] -z-10"></div>
@@ -146,7 +200,6 @@ body {
   </div>
 
   <div class="flex items-center gap-2">
-    <!-- Search -->
     <button
       id="mobileSearchToggle"
       class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
@@ -154,7 +207,6 @@ body {
       <span class="material-symbols-outlined">search</span>
     </button>
 
-    <!-- Menu -->
     <button
       id="menu-btn"
       class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
@@ -170,10 +222,7 @@ body {
   id="searchHeader"
   class="hidden lg:flex h-16 lg:h-20 glass-panel border-b border-white/10 items-center px-4 lg:px-8 mt-4 lg:mt-0"
 >
-  <div
-    id="searchWrapper"
-    class="relative w-full max-w-xl"
-  >
+  <div class="relative w-full max-w-xl">
     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
       search
     </span>
@@ -222,6 +271,7 @@ body {
 </main>
 </div>
 
+<!-- Desktop search (UNCHANGED) -->
 <script>
 const menuBtn = document.getElementById("menu-btn");
 const sidebar = document.querySelector("aside");
@@ -247,22 +297,59 @@ searchInput.addEventListener("input", () => {
 });
 </script>
 
+<!-- Mobile search (FIXED – suggestions only) -->
 <script>
+const apps = [
+  { name: "Dice Roller", icon: "assets/images/apps/dice.png", link: "dice.html" },
+  { name: "Calculator", icon: "assets/images/apps/calculator.png", link: "calculator.html" },
+  { name: "Meal Planner", icon: "assets/images/apps/meals.png", link: "#" }
+];
+
 const mobileSearchToggle = document.getElementById("mobileSearchToggle");
-const searchHeader = document.getElementById("searchHeader");
-const searchInput = document.getElementById("searchInput");
+const mobileSearchOverlay = document.getElementById("mobileSearchOverlay");
+const mobileSearchClose = document.getElementById("mobileSearchClose");
+const mobileSearchInput = document.getElementById("mobileSearchInput");
+const mobileSearchSuggestions = document.getElementById("mobileSearchSuggestions");
 
 mobileSearchToggle.addEventListener("click", () => {
-  const isHidden = searchHeader.classList.contains("hidden");
+  mobileSearchOverlay.classList.remove("hidden");
+  document.body.classList.add("overflow-hidden");
+  mobileSearchInput.focus();
+});
 
-  if (isHidden) {
-  searchHeader.classList.remove("hidden");
-  searchInput.focus();
-} else {
-  searchHeader.classList.add("hidden");
-  searchInput.value = "";
+mobileSearchClose.addEventListener("click", closeMobileSearch);
+
+function closeMobileSearch() {
+  mobileSearchOverlay.classList.add("hidden");
+  document.body.classList.remove("overflow-hidden");
+  mobileSearchInput.value = "";
+  mobileSearchSuggestions.innerHTML = "";
 }
 
+mobileSearchInput.addEventListener("input", () => {
+  const query = mobileSearchInput.value.toLowerCase().trim();
+  mobileSearchSuggestions.innerHTML = "";
+
+  if (!query) return;
+
+  apps
+    .filter(app => app.name.toLowerCase().includes(query))
+    .forEach(app => {
+      const item = document.createElement("a");
+      item.href = app.link;
+      item.className = "search-item";
+      item.innerHTML = `
+        <img src="${app.icon}" class="w-8 h-8 object-contain" />
+        <span class="font-semibold">${app.name}</span>
+      `;
+      mobileSearchSuggestions.appendChild(item);
+    });
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !mobileSearchOverlay.classList.contains("hidden")) {
+    closeMobileSearch();
+  }
 });
 </script>
 
