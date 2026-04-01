@@ -1,0 +1,6 @@
+/open/app/* /app.html?id=:splat 200
+/open/web/* /website.html?id=:splat 200
+/api/apps_catalog.json https://vibe-labs-appstore.web.app/apps_catalog.json 200
+/api/web_catalog.json https://vibe-labs-appstore.web.app/web_catalog.json 200
+/api/profile_catalog.json https://vibe-labs-appstore.web.app/profile_catalog.json 200
+/api/appstore_metadata.json https://vibe-labs-appstore.web.app/appstore_metadata.json 200
