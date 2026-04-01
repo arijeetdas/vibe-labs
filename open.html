@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f4efe6" />
   <title>Opening Vibe Store</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="manifest" href="site.webmanifest" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/site.css?v=20260401b" />
+  <link rel="stylesheet" href="/assets/css/site.css?v=20260401b" />
   <style>
     .open-wrap {
       max-width: 720px;
@@ -84,13 +84,6 @@
       word-break: break-word;
     }
 
-    .open-actions {
-      margin-top: 22px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -124,12 +117,6 @@
             <li>Works only on Android devices.</li>
             <li>If Vibe Store is installed and still not opening, go to App Info, then Open by default, enable Open supported links, open Add link, and add both supported links.</li>
           </ol>
-
-
-          <div class="open-actions">
-            <button type="button" class="button-secondary" id="retry-open">Try opening again</button>
-            <button type="button" class="button-secondary" id="go-detail">Open web details page</button>
-          </div>
         </section>
       </div>
     </main>
@@ -137,7 +124,7 @@
     <footer class="site-footer">Vibe Store Web</footer>
   </div>
 
-  <script src="assets/js/site.js?v=20260401b"></script>
+  <script src="/assets/js/site.js?v=20260401b"></script>
   <script>
     (function () {
       window.VibeSite.bindDataActions(document);
@@ -159,12 +146,6 @@
         return { kind: "", id: "" };
       }
 
-      function detailUrl(kind, id) {
-        return kind === "app"
-          ? new URL(window.VibeSite.appHref(id), window.location.origin).href
-          : new URL(window.VibeSite.websiteHref(id), window.location.origin).href;
-      }
-
       function storeOpenUrl(kind, id) {
         return kind === "app"
           ? window.VibeSite.appOpenLink(id)
@@ -182,8 +163,6 @@
         const { kind, id } = parseOpenContext();
         const status = document.getElementById("open-status");
         const targetText = document.getElementById("open-target-text");
-        const retryBtn = document.getElementById("retry-open");
-        const detailBtn = document.getElementById("go-detail");
 
         if (!kind || !id) {
           if (status) {
@@ -192,22 +171,14 @@
           if (targetText) {
             targetText.textContent = "No target found.";
           }
-          retryBtn && (retryBtn.disabled = true);
-          detailBtn && (detailBtn.disabled = true);
           return;
         }
 
         const openUrl = storeOpenUrl(kind, id);
-        const webDetailUrl = detailUrl(kind, id);
         const isAndroid = /Android/i.test(navigator.userAgent || "");
         const attemptKey = "vibe-store-open-attempt:" + kind + ":" + id;
 
         setText("open-target-text", "Target: " + kind + " / " + id);
-        if (detailBtn) {
-          detailBtn.addEventListener("click", () => {
-            window.location.assign(webDetailUrl);
-          });
-        }
 
         function tryOpen(force) {
           if (!isAndroid) {
@@ -223,12 +194,6 @@
           sessionStorage.setItem(attemptKey, "1");
           setText("open-status", "Trying to open Vibe Store now...");
           window.location.assign(openUrl);
-        }
-
-        if (retryBtn) {
-          retryBtn.addEventListener("click", () => {
-            tryOpen(true);
-          });
         }
 
         tryOpen(false);
