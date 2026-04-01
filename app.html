@@ -289,7 +289,7 @@
       const shareBtn   = document.getElementById("share-btn");
       const shareSheet = document.getElementById("share-sheet");
       const shareBackdrop = document.getElementById("share-backdrop");
-      const pageUrl    = storeLink;
+      const pageUrl    = new URL(window.VibeSite.appHref(app.id), window.location.origin).href;
       const shareTitle = `${app.name} – Vibe Store`;
       const isMobileOs = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 

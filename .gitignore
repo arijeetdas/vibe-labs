@@ -1,0 +1,20 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs and temp
+*.log
+*.tmp
+*.bak
+
+# Build / cache artifacts
+node_modules/
+dist/
+build/
+out/
+coverage/
+.cache/
+.next/
+.nuxt/
+.dart_tool/
