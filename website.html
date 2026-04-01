@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4efe6" />
+  <title>Vibe Store Web | Website Details</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/site.css?v=20260401b" />
+</head>
+<body class="store-layout">
+  <div class="shell">
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand" data-link="index.html" role="button" tabindex="0">
+          <span class="brand__mark">⚡</span>
+          <span class="brand__text"><strong>Vibe Store ⚡</strong><span>Mobile-first web store</span></span>
+        </a>
+        <nav class="nav">
+          <button type="button" data-link="index.html"><span class="nav__icon">🏠</span><span class="nav__label">Home</span></button>
+          <button type="button" data-link="apps.html"><span class="nav__icon">📦</span><span class="nav__label">Projects</span></button>
+          <button type="button" data-link="search.html"><span class="nav__icon">🔎</span><span class="nav__label">Search</span></button>
+          <button type="button" data-link="about.html"><span class="nav__icon">👤</span><span class="nav__label">About</span></button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div id="website-detail" class="notice">Loading website details...</div>
+    </main>
+
+    <footer class="site-footer">Vibe Store Web</footer>
+  </div>
+
+  <script src="assets/js/catalog-api.js?v=20260401b"></script>
+  <script src="assets/js/catalog-snapshot.js?v=20260401b"></script>
+  <script src="assets/js/site.js?v=20260401b"></script>
+  <script>
+    const root = document.getElementById("website-detail");
+
+    function renderWebsite(site) {
+      const changelog = Array.isArray(site.changelog) ? site.changelog : [];
+      const developers = window.VibeSite.developerNames(site) || site.team || "Vibe Labs";
+      const vibeStoreOpenLink = site.openInVibeStoreUrl || site.vibeStoreOpenUrl || site.openUrl || window.VibeSite.websiteOpenLink(site.id);
+      document.title = `Vibe Store Web | ${site.name}`;
+
+      root.className = "";
+      root.innerHTML = `
+        <section class="detail-hero">
+          <p class="hero__eyebrow">Website Details</p>
+          <div class="detail-hero__top">
+            <img class="detail-hero__icon" src="${window.VibeSite.esc(site.icon)}" alt="${window.VibeSite.esc(site.name)}" />
+            <div>
+              <h1>${window.VibeSite.esc(site.name)}</h1>
+              <p>${window.VibeSite.esc(site.description || "No description available.")}</p>
+              <div class="button-row">
+                <button class="button" type="button" data-external="${window.VibeSite.esc(site.websiteUrl || "")}">Open Website</button>
+                <button class="button-secondary" type="button" data-external="${window.VibeSite.esc(vibeStoreOpenLink)}">Open in Vibe Store</button>
+                <button class="button-secondary" type="button" data-link="apps.html">Back to Projects</button>
+              </div>
+            </div>
+          </div>
+          <div class="detail-meta">
+            <div class="detail-meta__item"><span>Type</span><strong>Website</strong></div>
+            <div class="detail-meta__item"><span>Owner</span><strong>${window.VibeSite.esc(site.team || "Vibe Labs")}</strong></div>
+            <div class="detail-meta__item"><span>Developers</span><strong>${window.VibeSite.esc(developers)}</strong></div>
+            <div class="detail-meta__item"><span>Status</span><strong>Live</strong></div>
+          </div>
+        </section>
+
+        <section class="split">
+          <section class="panel">
+            <div class="section__head">
+              <div>
+                <p class="section__eyebrow">Overview</p>
+                <h2>Project Notes</h2>
+              </div>
+            </div>
+            <p class="muted">${window.VibeSite.esc(site.description || "No overview available.")}</p>
+            <div class="button-row">
+              <button class="button-secondary" type="button" data-link="search.html?q=${encodeURIComponent(site.name)}">Search Related Entries</button>
+            </div>
+          </section>
+
+          <aside class="panel">
+            <div class="section__head">
+              <div>
+                <p class="section__eyebrow">Release Notes</p>
+                <h2>Changelog</h2>
+              </div>
+            </div>
+            <ul class="list">
+              ${changelog.length ? changelog.map((item) => `<li>${window.VibeSite.esc(item)}</li>`).join("") : "<li>No release notes available.</li>"}
+            </ul>
+          </aside>
+        </section>
+      `;
+    }
+
+    async function init() {
+      try {
+        const websiteId = window.VibeSite.queryValue("id");
+        const websites = await window.VibeSite.loadWebsites();
+        const website = websites.find((entry) => String(entry.id).toLowerCase() === websiteId.toLowerCase());
+
+        if (!website) {
+          root.innerHTML = window.VibeSite.emptyState("Website not found.");
+          return;
+        }
+
+        renderWebsite(website);
+      } catch (_) {
+        root.innerHTML = window.VibeSite.emptyState("Unable to load website details.");
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
