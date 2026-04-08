@@ -76,6 +76,43 @@
       margin-top: 10px;
     }
 
+    .open-inline-banner {
+      margin-top: 12px;
+    }
+
+    .open-inline-banner .release-banner {
+      width: 100%;
+    }
+
+    /* Hide only the global header-injected banner on this page. */
+    .shell > .release-banner-wrap {
+      display: none !important;
+    }
+
+    .open-substeps {
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0;
+    }
+
+    .open-substeps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .open-substeps li + li {
+      margin-top: 8px;
+    }
+
+    .open-substeps .icon {
+      width: 20px;
+      flex: 0 0 20px;
+      text-align: center;
+      line-height: 1.3;
+    }
+
     .open-links {
       margin: 12px 0 0;
       color: var(--muted);
@@ -114,8 +151,38 @@
           <p class="open-status" id="open-status">Trying to launch Vibe Store on this device.</p>
 
           <ol class="open-list">
-            <li>Works only on Android devices.</li>
-            <li>If Vibe Store is installed and still not opening, go to App Info, then Open by default, enable Open supported links, open Add link, and add both supported links.</li>
+            <li>
+              <span aria-label="phone">📱</span>
+              <span aria-label="warning">⚠️</span>
+              <strong>Looks like Vibe Store is not installed.</strong>
+
+              <section class="open-inline-banner" id="open-inline-release-banner" hidden>
+                <div class="release-banner" role="status" aria-live="polite">
+                  <div class="release-banner__left">
+                    <span class="release-banner__mark" aria-hidden="true">
+                      <img class="release-banner__mark-bg" src="/assets/images/appstore/app_icon_background.png" alt="" />
+                      <img class="release-banner__mark-fg" src="/assets/images/appstore/app_icon_foreground.png" alt="" />
+                    </span>
+                    <div>
+                      <p class="release-banner__name">Vibe Store</p>
+                      <p class="release-banner__meta" data-release-meta>Latest Stable</p>
+                    </div>
+                  </div>
+                  <button class="release-banner__cta" type="button" data-release-cta>Download for Android</button>
+                </div>
+              </section>
+            </li>
+            <li>
+              <strong>If Vibe Store is installed but not opening:</strong>
+              <ul class="open-substeps">
+                <li><span class="icon" aria-hidden="true">📱</span><span>Go to <strong>App Info (Vibe Store)</strong>.</span></li>
+                <li><span class="icon" aria-hidden="true">🔗</span><span>Open <strong>Open by default</strong> (Allow app to open supported links).</span></li>
+                <li><span class="icon" aria-hidden="true">✅</span><span>Enable <strong>Open supported links</strong> if it is not already enabled.</span></li>
+                <li><span class="icon" aria-hidden="true">➕</span><span>Tap <strong>Add link</strong>.</span></li>
+                <li><span class="icon" aria-hidden="true">☑️</span><span>Select both listed links.</span></li>
+                <li><span class="icon" aria-hidden="true">🚀</span><span>Tap <strong>Add</strong>.</span></li>
+              </ul>
+            </li>
           </ol>
         </section>
       </div>
@@ -124,9 +191,31 @@
     <footer class="site-footer">Vibe Store Web</footer>
   </div>
 
+  <script src="/assets/js/catalog-api.js?v=20260401b"></script>
+  <script src="/assets/js/catalog-snapshot.js?v=20260401b"></script>
   <script src="/assets/js/site.js?v=20260401b"></script>
   <script>
     (function () {
+      function removeTopReleaseBanner() {
+        const existing = document.querySelector(".shell > .release-banner-wrap");
+        if (existing) {
+          existing.remove();
+        }
+
+        const observer = new MutationObserver(function () {
+          const banner = document.querySelector(".shell > .release-banner-wrap");
+          if (banner) {
+            banner.remove();
+          }
+        });
+
+        const shell = document.querySelector(".shell");
+        if (shell) {
+          observer.observe(shell, { childList: true });
+        }
+      }
+
+      removeTopReleaseBanner();
       window.VibeSite.bindDataActions(document);
 
       function parseOpenContext() {
@@ -159,7 +248,55 @@
         }
       }
 
+      async function setupInlineDownloadBanner() {
+        const banner = document.getElementById("open-inline-release-banner");
+        if (!banner) {
+          return;
+        }
+
+        const cta = banner.querySelector("[data-release-cta]");
+        banner.hidden = false;
+
+        if (cta) {
+          cta.addEventListener("click", function () {
+            window.location.assign("/apps.html");
+          });
+        }
+
+        if (!window.VibeSite || !window.VibeSite.loadAppStoreMetadata) {
+          return;
+        }
+
+        try {
+          const appStore = await window.VibeSite.loadAppStoreMetadata();
+          const stable = appStore && appStore.stable;
+          const stableVersion = stable && stable.version;
+          const stableApkUrl = stable && stable.apk && stable.apk.url;
+
+          if (!stableVersion || !stableApkUrl) {
+            return;
+          }
+
+          const meta = banner.querySelector("[data-release-meta]");
+
+          if (meta) {
+            meta.textContent = "Latest Stable: v" + stableVersion;
+          }
+
+          if (cta) {
+            cta.textContent = "Download for Android";
+            cta.onclick = function () {
+              window.location.assign(stableApkUrl);
+            };
+          }
+        } catch (_) {
+          // Keep page usable if app store metadata is temporarily unavailable.
+        }
+      }
+
       function main() {
+        setupInlineDownloadBanner();
+
         const { kind, id } = parseOpenContext();
         const status = document.getElementById("open-status");
         const targetText = document.getElementById("open-target-text");
@@ -169,7 +306,7 @@
             status.textContent = "Invalid open link. This page needs a valid app or website id.";
           }
           if (targetText) {
-            targetText.textContent = "No target found.";
+            targetText.textContent = "";
           }
           return;
         }
@@ -178,7 +315,7 @@
         const isAndroid = /Android/i.test(navigator.userAgent || "");
         const attemptKey = "vibe-store-open-attempt:" + kind + ":" + id;
 
-        setText("open-target-text", "Target: " + kind + " / " + id);
+        setText("open-target-text", "");
 
         function tryOpen(force) {
           if (!isAndroid) {
