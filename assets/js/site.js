@@ -46,35 +46,43 @@
 
   function normalizeAppEntry(entry) {
     const appId = String(entry && entry.id ? entry.id : "").trim();
-    const openLink = firstNonEmptyString([
+    const storeOpenLink = firstNonEmptyString([
       entry && entry.openInVibeStoreUrl,
       entry && entry.vibeStoreOpenUrl,
       entry && entry.openUrl,
       appId ? appOpenLink(appId) : ""
     ]);
+    const websiteLink = firstNonEmptyString([
+      entry && entry.openUrl,
+      appId ? appHref(appId) : ""
+    ]);
 
     return {
       ...entry,
-      openInVibeStoreUrl: openLink,
-      vibeStoreOpenUrl: openLink,
-      openUrl: openLink
+      openInVibeStoreUrl: storeOpenLink,
+      vibeStoreOpenUrl: storeOpenLink,
+      openUrl: websiteLink
     };
   }
 
   function normalizeWebsiteEntry(entry) {
     const websiteId = String(entry && entry.id ? entry.id : "").trim();
-    const openLink = firstNonEmptyString([
+    const storeOpenLink = firstNonEmptyString([
       entry && entry.openInVibeStoreUrl,
       entry && entry.vibeStoreOpenUrl,
       entry && entry.openUrl,
       websiteId ? websiteOpenLink(websiteId) : ""
     ]);
+    const websiteLink = firstNonEmptyString([
+      entry && entry.openUrl,
+      websiteId ? websiteHref(websiteId) : ""
+    ]);
 
     return {
       ...entry,
-      openInVibeStoreUrl: openLink,
-      vibeStoreOpenUrl: openLink,
-      openUrl: openLink
+      openInVibeStoreUrl: storeOpenLink,
+      vibeStoreOpenUrl: storeOpenLink,
+      openUrl: websiteLink
     };
   }
 
