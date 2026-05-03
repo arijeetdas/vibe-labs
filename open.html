@@ -317,23 +317,38 @@
 
         setText("open-target-text", "");
 
-        function tryOpen(force) {
+        function tryOpen(force, kind, id) {
           if (!isAndroid) {
-            setText("open-status", "Android is required for automatic app opening. You can still use the web details page.");
+            setText("open-status", "Android is required for automatic app opening. Redirecting to web details page.");
+            setTimeout(() => {
+              window.location.assign(`${window.location.origin}/app.html?id=${id}`);
+            }, 1000);
             return;
           }
 
           if (!force && sessionStorage.getItem(attemptKey) === "1") {
-            setText("open-status", "Automatic attempt already made in this tab. Use Try opening again if needed.");
+            setText("open-status", "Automatic attempt already made in this tab. Redirecting to web details page.");
+            setTimeout(() => {
+              window.location.assign(`${window.location.origin}/app.html?id=${id}`);
+            }, 1000);
             return;
           }
 
           sessionStorage.setItem(attemptKey, "1");
           setText("open-status", "Trying to open Vibe Store now...");
           window.location.assign(openUrl);
+
+          // Fallback: if app doesn't open within 3 seconds, redirect to web page
+          if (kind === "app") {
+            setTimeout(() => {
+              if (!document.hidden) {
+                window.location.assign(`${window.location.origin}/app.html?id=${id}`);
+              }
+            }, 3000);
+          }
         }
 
-        tryOpen(false);
+        tryOpen(false, kind, id);
       }
 
       main();
